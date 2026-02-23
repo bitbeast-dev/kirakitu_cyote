@@ -2,10 +2,25 @@
 
 import { useState } from 'react'
 import { MapPin, Phone, Mail, User, Heart, ShoppingCart, Menu, Search, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function Navbar() {
   const [cartCount] = useState(3)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [password, setPassword] = useState('')
+  const router = useRouter()
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (password === 'admin123') {
+      localStorage.setItem('adminAuth', 'true')
+      setShowLoginModal(false)
+      router.push('/admin')
+    } else {
+      alert('Invalid password')
+    }
+  }
 
   return (
     <header className="w-full bg-white shadow-md">
@@ -51,7 +66,7 @@ export default function Navbar() {
 
             {/* Right Actions */}
             <div className="flex items-center">
-              <button className="hidden lg:flex items-center gap-2 px-4 py-2 hover:bg-gray-50 transition-colors">
+              <button onClick={() => setShowLoginModal(true)} className="hidden lg:flex items-center gap-2 px-4 py-2 hover:bg-gray-50 transition-colors">
                 <User className="w-5 h-5" style={{ color: '#50a2ff' }} />
               </button>
 
@@ -95,6 +110,31 @@ export default function Navbar() {
             <a href="#" className="px-4 py-3 hover:bg-blue-500 transition-colors border-b border-blue-300">ABOUT US</a>
             <a href="#" className="px-4 py-3 hover:bg-blue-500 transition-colors">CONTACT</a>
           </nav>
+        </div>
+      )}
+
+      {/* Login Modal */}
+      {showLoginModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-8 max-w-md w-full relative">
+            <button onClick={() => setShowLoginModal(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+              <X className="w-6 h-6" />
+            </button>
+            <h2 className="font-display text-3xl text-center mb-6">Admin Login</h2>
+            <form onSubmit={handleLogin}>
+              <input
+                type="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-gray-300 mb-4"
+                autoFocus
+              />
+              <button type="submit" className="w-full bg-blue-500 text-white font-bold py-3 hover:bg-blue-600">
+                Login
+              </button>
+            </form>
+          </div>
         </div>
       )}
     </header>

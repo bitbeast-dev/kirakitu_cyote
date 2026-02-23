@@ -22,6 +22,7 @@ model Product {
   stockCount     Int         @default(0)
   category       String
   mainCategory   String      @default("Electronics")
+  placement      String      @default("All Products")
   description    String?
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
