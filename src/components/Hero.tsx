@@ -641,29 +641,36 @@ export default function Hero() {
         </div>
 
         {/* Footer */}
-        <footer className="bg-gray-900 text-white">
+        <footer id="about" className="bg-gray-900 text-white">
           <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
               <div>
                 <h3 className="font-display text-xl mb-4">{t('footer.brand')}</h3>
                 <p className="text-gray-400 text-sm">{t('footer.desc')}</p>
+                <div className="mt-4">
+                  <h4 className="font-semibold mb-2">About Us</h4>
+                  <p className="text-gray-400 text-sm">KIRAKITU is Rwanda's premier destination for quality children's products, toys, and educational materials. We bring joy and learning to children across Rwanda.</p>
+                </div>
               </div>
               <div>
                 <h4 className="font-semibold mb-4">{t('footer.shop')}</h4>
                 <ul className="space-y-2 text-sm text-gray-400">
-                  <li><a href="#" className="hover:text-white">{t('footer.shop.all')}</a></li>
-                  <li><a href="#" className="hover:text-white">{t('footer.shop.new')}</a></li>
-                  <li><a href="#" className="hover:text-white">{t('footer.shop.best')}</a></li>
-                  <li><a href="#" className="hover:text-white">{t('footer.shop.sale')}</a></li>
+                  <li><a href="#products" className="hover:text-white">{t('footer.shop.all')}</a></li>
+                  <li><a href="#products" className="hover:text-white">{t('footer.shop.new')}</a></li>
+                  <li><a href="#products" className="hover:text-white">{t('footer.shop.best')}</a></li>
+                  <li><a href="#products" className="hover:text-white">{t('footer.shop.sale')}</a></li>
                 </ul>
               </div>
-              <div>
-                <h4 className="font-semibold mb-4">{t('footer.support')}</h4>
+              <div id="contact">
+                <h4 className="font-semibold mb-4">Contact Us</h4>
                 <ul className="space-y-2 text-sm text-gray-400">
-                  <li><a href="#" className="hover:text-white">{t('footer.support.contact')}</a></li>
-                  <li><a href="#" className="hover:text-white">{t('footer.support.shipping')}</a></li>
-                  <li><a href="#" className="hover:text-white">{t('footer.support.returns')}</a></li>
-                  <li><a href="#" className="hover:text-white">{t('footer.support.faq')}</a></li>
+                  <li>+250 786 127 865</li>
+                  <li>+250 794 269 385</li>
+                  <li>info@kirakitu.rw</li>
+                  <li>Kigali, Rwanda</li>
+                  <li className="pt-2">
+                    <a href="https://wa.me/250786127865" target="_blank" className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">WhatsApp Us</a>
+                  </li>
                 </ul>
               </div>
               <div>

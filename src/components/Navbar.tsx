@@ -115,7 +115,6 @@ export default function Navbar() {
               className="flex items-center gap-1 hover:text-yellow-400 transition-colors"
               title={language === 'en' ? 'Switch to Kinyarwanda' : 'Switch to English'}
             >
-              <span className="text-lg">{language === 'en' ? '🇬🇧' : '🇷🇼'}</span>
               <span className="text-xs">{language === 'en' ? 'EN' : 'RW'}</span>
             </button>
             <button onClick={() => adminExists ? setShowLoginModal(true) : setShowSignupModal(true)} className="p-1 hover:text-yellow-400 transition-colors" title={adminExists ? "Admin Login" : "Admin Signup"}>
@@ -186,13 +185,9 @@ export default function Navbar() {
       <div className="hidden lg:block bg-blue-400 text-white p-4">
         <div className="max-w-7xl mx-auto px-4">
           <nav className="flex items-center gap-6 py-3 text-sm overflow-x-auto">
-            <a href="#" className="hover:text-yellow-300 whitespace-nowrap font-semibold transition-colors">{t('nav.home')}</a>
-            <a href="#" className="hover:text-yellow-300 whitespace-nowrap transition-colors">{t('nav.products')}</a>
-            <a href="#" className="hover:text-yellow-300 whitespace-nowrap transition-colors">{t('header.new')}</a>
-            <a href="#" className="hover:text-yellow-300 whitespace-nowrap transition-colors">{t('header.bestsellers')}</a>
-            <a href="#" className="hover:text-yellow-300 whitespace-nowrap transition-colors">{t('header.gifts')}</a>
-            <a href="#" className="hover:text-yellow-300 whitespace-nowrap transition-colors">{t('nav.aboutus')}</a>
-            <a href="#" className="hover:text-yellow-300 whitespace-nowrap transition-colors">{t('nav.contact')}</a>
+            <a href="/" className="hover:text-yellow-300 whitespace-nowrap font-semibold transition-colors">{t('nav.home')}</a>
+            <a href="/#products" className="hover:text-yellow-300 whitespace-nowrap transition-colors">{t('nav.products')}</a>
+            <a href="/contact" className="hover:text-yellow-300 whitespace-nowrap transition-colors">{t('nav.contact')}</a>
           </nav>
         </div>
       </div>
@@ -200,13 +195,9 @@ export default function Navbar() {
       {isMenuOpen && (
         <div className="lg:hidden bg-blue-400 text-white">
           <nav className="flex flex-col">
-            <a href="#" className="px-4 py-3 hover:bg-blue-500 font-semibold transition-colors border-b border-blue-300">{t('nav.home')}</a>
-            <a href="#" className="px-4 py-3 hover:bg-blue-500 transition-colors border-b border-blue-300">{t('nav.products')}</a>
-            <a href="#" className="px-4 py-3 hover:bg-blue-500 transition-colors border-b border-blue-300">{t('header.new')}</a>
-            <a href="#" className="px-4 py-3 hover:bg-blue-500 transition-colors border-b border-blue-300">{t('header.bestsellers')}</a>
-            <a href="#" className="px-4 py-3 hover:bg-blue-500 transition-colors border-b border-blue-300">{t('header.gifts')}</a>
-            <a href="#" className="px-4 py-3 hover:bg-blue-500 transition-colors border-b border-blue-300">{t('nav.aboutus')}</a>
-            <a href="#" className="px-4 py-3 hover:bg-blue-500 transition-colors">{t('nav.contact')}</a>
+            <a href="/" className="px-4 py-3 hover:bg-blue-500 font-semibold transition-colors border-b border-blue-300">{t('nav.home')}</a>
+            <a href="/#products" className="px-4 py-3 hover:bg-blue-500 transition-colors border-b border-blue-300">{t('nav.products')}</a>
+            <a href="/contact" className="px-4 py-3 hover:bg-blue-500 transition-colors">{t('nav.contact')}</a>
           </nav>
         </div>
       )}
