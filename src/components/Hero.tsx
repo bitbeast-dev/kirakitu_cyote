@@ -2,7 +2,6 @@
 
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { products } from '@/lib/kirakitu-products'
 import { useCart } from '@/lib/cart-context'
 import { useLanguage } from '@/lib/LanguageContext'
 
@@ -46,9 +45,8 @@ export default function Hero() {
     fetch('/api/products')
       .then(res => res.json())
       .then(data => {
-        const duplicated = [...data, ...data, ...data]
-        setDbProducts(duplicated)
-        const uniqueCategories = [...new Set(duplicated.map((p: Product) => p.category).filter(Boolean))]
+        setDbProducts(data)
+        const uniqueCategories = [...new Set(data.map((p: Product) => p.category).filter(Boolean))]
         setCategories(uniqueCategories)
       })
       .catch(() => setDbProducts([]))
@@ -78,11 +76,8 @@ export default function Hero() {
     return () => clearInterval(imageInterval)
   }, [])
 
-  const featuredProducts = [...products, ...products, ...products].slice(0, 12)
   const bgColors = ['#73b9dd', '#71b781', '#ec96a3']
-  const masonryProducts = products.slice(0, 4)
   const masonryBgColors = ['#73b9dd', '#71b781', '#efd5d6', '#ffd966']
-  const allProducts = [...products, ...products, ...products]
 
   return (
     <section className="bg-white">
@@ -112,14 +107,14 @@ export default function Hero() {
 
               {/* Side Promos - 40% */}
               <div className="lg:col-span-5 grid grid-cols-2 lg:grid-cols-1 gap-4">
-                {masonryProducts.slice(0, 2).map((product, idx) => (
+                {dbProducts.slice(0, 2).map((product, idx) => (
                   <div key={product.id} className="relative rounded-xl overflow-hidden shadow-lg group cursor-pointer" style={{ backgroundColor: masonryBgColors[idx] }}>
                     <div className="h-[190px] lg:h-[238px] flex items-center justify-center p-6 relative">
-                      <img src={`/${product.image}`} alt={product.name} className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500" />
+                      <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       <div className="absolute bottom-3 left-3 right-3 text-white opacity-0 group-hover:opacity-100 transition-opacity">
                         <p className="font-bold text-sm">{product.name}</p>
-                        <p className="text-xs">{product.price}</p>
+                        <p className="text-xs">{product.price.toLocaleString()} RWF</p>
                       </div>
                     </div>
                   </div>
@@ -234,7 +229,7 @@ export default function Hero() {
             </div>
 
             {/* Product Cards - Train Carriage Design */}
-            {featuredProducts.map((product, idx) => (
+            {dbProducts.slice(0, 12).map((product, idx) => (
               <div key={`featured-${product.id}-${idx}`} className={`relative bg-white overflow-visible group hover:shadow-2xl transition-all duration-300 rounded-lg p-4 ${!showAllFeatured && 'flex-shrink-0 w-64'}`}>
                 {/* Decorative Label */}
              
@@ -250,9 +245,9 @@ export default function Hero() {
                   </div>
                   
                   {/* Product - Clear and Prominent */}
-                  <div className="relative h-64 flex items-center justify-center bg-white rounded-lg" style={{ backgroundColor: bgColors[idx] + '20' }}>
+                  <div className="relative h-64 flex items-center justify-center bg-white rounded-lg" style={{ backgroundColor: bgColors[idx % bgColors.length] + '20' }}>
                     <img
-                      src={product.image}
+                      src={product.imageUrl}
                       alt={product.name}
                       className="w-3/4 h-3/4 object-contain transform group-hover:scale-110 transition-all duration-500 drop-shadow-2xl border-4 border-white rounded-lg"
                     />
@@ -263,9 +258,9 @@ export default function Hero() {
                 <div className="mt-4">
                   <h3 className="font-display text-lg text-gray-900 mb-2 truncate">{product.name}</h3>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="font-display text-2xl" style={{ color: '#e60076' }}>{product.price}</span>
+                    <span className="font-display text-2xl" style={{ color: '#e60076' }}>{product.price.toLocaleString()} RWF</span>
                   </div>
-                  <button onClick={() => addToCart({ id: product.id.toString(), name: product.name, price: parseFloat(product.price.replace(/[^0-9]/g, '')), imageUrl: `/${product.image}` })} className="w-full text-white font-bold py-3 transition-colors duration-300 relative overflow-hidden group/btn rounded-lg" style={{ backgroundColor: bgColors[idx] }}>
+                  <button onClick={() => addToCart({ id: product.id, name: product.name, price: product.price, imageUrl: product.imageUrl })} className="w-full text-white font-bold py-3 transition-colors duration-300 relative overflow-hidden group/btn rounded-lg" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>
                     <span className="relative z-10">{t('btn.add')}</span>
                     <img src="/rainbow_confetti_overlay_elements-removebg-preview.png" alt="" className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 pointer-events-none" />
                   </button>
@@ -283,14 +278,14 @@ export default function Hero() {
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-display text-2xl lg:text-3xl text-gray-900">{t('section.all')}</h3>
-              {allProducts.length > 10 && (
+              {dbProducts.length > 10 && (
                 <button onClick={() => setShowAllProducts(!showAllProducts)} className="text-blue-600 font-semibold hover:text-blue-700 text-sm">
                   {showAllProducts ? 'Show Less' : t('btn.seeall')} →
                 </button>
               )}
             </div>
             <div className={`${showAllProducts ? 'grid' : 'flex overflow-x-auto gap-4 pb-4'} grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6`}>
-            {(showAllProducts ? allProducts : allProducts.slice(0, 10)).map((product, idx) => (
+            {(showAllProducts ? dbProducts : dbProducts.slice(0, 10)).map((product, idx) => (
               <div key={`${product.id}-${idx}`} className={`relative bg-white overflow-visible group shadow-lg hover:shadow-[0_8px_30px_rgb(0,0,0,0.3)] transition-all duration-300 ${!showAllProducts && 'flex-shrink-0 w-48'}`}>
                 {/* Ice Cream Cone Container */}
                 <div className="relative">
@@ -300,7 +295,7 @@ export default function Hero() {
                   {/* Product in Ice Cream */}
                   <div className="relative h-48 overflow-hidden" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>
                     <img
-                      src={product.image}
+                      src={product.imageUrl}
                       alt={product.name}
                       className="w-full h-full object-contain p-4 transform group-hover:scale-110 transition-transform duration-500"
                     />
@@ -310,9 +305,9 @@ export default function Hero() {
                 <div className="p-4 bg-white">
                     <h3 className="font-display text-sm text-gray-900 mb-2 truncate">{product.name}</h3>
                     <div className="mb-3">
-                      <span className="font-display text-xl" style={{ color: '#e60076' }}>{product.price}</span>
+                      <span className="font-display text-xl" style={{ color: '#e60076' }}>{product.price.toLocaleString()} RWF</span>
                     </div>
-                    <button onClick={() => addToCart({ id: product.id.toString(), name: product.name, price: parseFloat(product.price.replace(/[^0-9]/g, '')), imageUrl: `/${product.image}` })} className="w-full text-white font-bold py-2 text-sm hover:bg-blue-600 transition-colors duration-300 relative overflow-hidden group/btn" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>
+                    <button onClick={() => addToCart({ id: product.id, name: product.name, price: product.price, imageUrl: product.imageUrl })} className="w-full text-white font-bold py-2 text-sm hover:bg-blue-600 transition-colors duration-300 relative overflow-hidden group/btn" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>
                       <span className="relative z-10">{t('btn.add')}</span>
                       <img src="/rainbow_confetti_overlay_elements-removebg-preview.png" alt="" className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 pointer-events-none" />
                     </button>
@@ -332,7 +327,7 @@ export default function Hero() {
               <h3 className="font-display text-2xl lg:text-3xl text-gray-900">{t('section.toppicks')}</h3>
               <p className="text-gray-500 text-sm mt-1">{t('section.toppicks.desc')}</p>
             </div>
-            {allProducts.length > 4 && (
+            {dbProducts.length > 4 && (
               <button onClick={() => setShowAllTopPicks(!showAllTopPicks)} className="text-blue-600 font-semibold hover:text-blue-700 text-sm">
                 {showAllTopPicks ? 'Show Less' : t('btn.seeall')} →
               </button>
@@ -340,7 +335,7 @@ export default function Hero() {
           </div>
 
           <div className={`${showAllTopPicks ? 'grid grid-cols-1 lg:grid-cols-4 gap-12' : 'flex overflow-x-scroll gap-12 pb-4'} -mx-4 px-4`} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            {(showAllTopPicks ? allProducts : allProducts.slice(0, 4)).map((product, idx) => (
+            {(showAllTopPicks ? dbProducts : dbProducts.slice(0, 4)).map((product, idx) => (
               <div key={`toppicks-${product.id}-${idx}`} className={`relative flex flex-col items-center mt-20 ${!showAllTopPicks && 'flex-shrink-0 w-80'}`}>
                 
                 {/* Balloon Container with Product */}
@@ -350,7 +345,7 @@ export default function Hero() {
                     {/* Product Image inside Balloon */}
                     <div className="absolute inset-0 flex items-center justify-center p-8">
                       <img
-                        src={product.image}
+                        src={product.imageUrl}
                         alt={product.name}
                         className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500"
                       />
@@ -370,10 +365,9 @@ export default function Hero() {
                 <div className="mt-8 text-center w-full max-w-xs">
                   <h4 className="font-display text-xl text-gray-900 mb-2">{product.name}</h4>
                   <div className="flex items-center justify-center gap-2 mb-4">
-                    <span className="font-display text-3xl" style={{ color: '#e60076' }}>{product.price}</span>
-                    <span className="text-sm text-gray-400 line-through">99,990 RWF</span>
+                    <span className="font-display text-3xl" style={{ color: '#e60076' }}>{product.price.toLocaleString()} RWF</span>
                   </div>
-                  <button onClick={() => addToCart({ id: product.id.toString(), name: product.name, price: parseFloat(product.price.replace(/[^0-9]/g, '')), imageUrl: `/${product.image}` })} className="w-full text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>{t('btn.add')}</button>
+                  <button onClick={() => addToCart({ id: product.id, name: product.name, price: product.price, imageUrl: product.imageUrl })} className="w-full text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>{t('btn.add')}</button>
                 </div>
 
                 {/* Sparkle Effects */}
@@ -484,14 +478,14 @@ export default function Hero() {
               <h3 className="font-display text-2xl lg:text-3xl text-gray-900 flex items-center gap-2">{t('section.books')}</h3>
               <p className="text-gray-500 text-sm mt-1">{t('section.books.desc')}</p>
             </div>
-            {allProducts.length > 6 && (
+            {dbProducts.length > 6 && (
               <button onClick={() => setShowAllBooks(!showAllBooks)} className="text-purple-600 font-semibold hover:text-purple-700 text-sm">
                 {showAllBooks ? 'Show Less' : t('btn.seeall')} →
               </button>
             )}
           </div>
           <div className={`${showAllBooks ? 'grid' : 'flex overflow-x-auto gap-4 pb-4'} grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 lg:gap-6`}>
-            {(showAllBooks ? allProducts : allProducts.slice(0, 6)).map((product, idx) => (
+            {(showAllBooks ? dbProducts : dbProducts.slice(0, 6)).map((product, idx) => (
               <div key={`${product.id}-${idx}`} className={`relative bg-white overflow-visible group hover:shadow-xl hover:border-purple-300 transition-all duration-300 ${!showAllBooks && 'flex-shrink-0 w-48'}`}>
                 {/* Train Car Container */}
                 <div className="relative">
@@ -499,16 +493,16 @@ export default function Hero() {
                   
                   
                   <div className="relative h-48" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>
-                    <img src={product.image} alt={product.name} className="w-full h-full object-contain p-4 transform group-hover:scale-105 transition-transform" />
+                    <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain p-4 transform group-hover:scale-105 transition-transform" />
                   </div>
                 </div>
                 
                 <div className="p-3 bg-white">
                   <h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2">{product.name}</h4>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold" style={{ color: '#e60076' }}>{product.price}</span>
+                    <span className="font-bold" style={{ color: '#e60076' }}>{product.price.toLocaleString()} RWF</span>
                   </div>
-                  <button onClick={() => addToCart({ id: product.id.toString(), name: product.name, price: parseFloat(product.price.replace(/[^0-9]/g, '')), imageUrl: `/${product.image}` })} className="w-full text-white font-bold py-2 text-sm transition-colors relative overflow-hidden group/btn" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>
+                  <button onClick={() => addToCart({ id: product.id, name: product.name, price: product.price, imageUrl: product.imageUrl })} className="w-full text-white font-bold py-2 text-sm transition-colors relative overflow-hidden group/btn" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>
                     <span className="relative z-10">{t('btn.add')}</span>
                     <img src="/confetti.png" alt="" className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 pointer-events-none" />
                   </button>
@@ -535,7 +529,7 @@ export default function Hero() {
           </div>
 
           <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {(showAllDeals ? allProducts : allProducts.slice(0, 4)).map((product, idx) => (
+            {(showAllDeals ? dbProducts : dbProducts.slice(0, 4)).map((product, idx) => (
               <div 
                 key={`deals-${product.id}-${idx}`} 
                 className="relative group cursor-pointer"
@@ -564,7 +558,7 @@ export default function Hero() {
                     style={{ backgroundColor: bgColors[idx % bgColors.length] }}
                   >
                     <img
-                      src={product.image}
+                      src={product.imageUrl}
                       alt={product.name}
                       className="w-full h-full object-contain p-6 transform group-hover:scale-110 transition-transform duration-500"
                     />
@@ -573,10 +567,9 @@ export default function Hero() {
                   <div className="p-5">
                     <h3 className="font-display text-lg text-gray-900 mb-2 truncate">{product.name}</h3>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="font-display text-2xl" style={{ color: '#e60076' }}>{product.price}</span>
-                      <span className="text-xs text-gray-400 line-through">99,990 RWF</span>
+                      <span className="font-display text-2xl" style={{ color: '#e60076' }}>{product.price.toLocaleString()} RWF</span>
                     </div>
-                    <button onClick={() => addToCart({ id: product.id.toString(), name: product.name, price: parseFloat(product.price.replace(/[^0-9]/g, '')), imageUrl: `/${product.image}` })} className="w-full text-white font-bold py-3 hover:shadow-lg transition-all transform hover:scale-105" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>{t('btn.add')}</button>
+                    <button onClick={() => addToCart({ id: product.id, name: product.name, price: product.price, imageUrl: product.imageUrl })} className="w-full text-white font-bold py-3 hover:shadow-lg transition-all transform hover:scale-105" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>{t('btn.add')}</button>
                   </div>
                 </div>
 
@@ -609,21 +602,21 @@ export default function Hero() {
               <h3 className="font-display text-2xl lg:text-3xl text-gray-900 flex items-center gap-2">{t('section.games')}</h3>
               <p className="text-gray-500 text-sm mt-1">{t('section.games.desc')}</p>
             </div>
-            {allProducts.length > 5 && (
+            {dbProducts.length > 5 && (
               <button onClick={() => setShowAllGames(!showAllGames)} className="text-blue-600 font-semibold hover:text-blue-700 text-sm">
                 {showAllGames ? 'Show Less' : t('btn.explore')} →
               </button>
             )}
           </div>
           <div className={`${showAllGames ? 'grid' : 'flex overflow-x-auto gap-4 pb-4'} grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6`}>
-            {(showAllGames ? allProducts : allProducts.slice(0, 5)).map((product, idx) => (
+            {(showAllGames ? dbProducts : dbProducts.slice(0, 5)).map((product, idx) => (
               <div key={`${product.id}-${idx}`} className={`bg-white border border-gray-200 overflow-hidden group hover:shadow-2xl hover:border-blue-300 transition-all duration-300 ${!showAllGames && 'flex-shrink-0 w-48'}`}>
                 <div 
                   className="relative h-48 overflow-hidden" 
                   style={{ backgroundColor: bgColors[idx % bgColors.length] }}
                 >
                   <img
-                    src={product.image}
+                    src={product.imageUrl}
                     alt={product.name}
                     className="w-full h-full object-contain p-4 transform group-hover:scale-110 transition-transform duration-500"
                   />
@@ -631,9 +624,9 @@ export default function Hero() {
                 <div className="p-4">
                   <h3 className="font-display text-sm text-gray-900 mb-2 truncate">{product.name}</h3>
                   <div className="mb-3">
-                    <span className="font-display text-xl" style={{ color: '#e60076' }}>{product.price}</span>
+                    <span className="font-display text-xl" style={{ color: '#e60076' }}>{product.price.toLocaleString()} RWF</span>
                   </div>
-                  <button onClick={() => addToCart({ id: product.id.toString(), name: product.name, price: parseFloat(product.price.replace(/[^0-9]/g, '')), imageUrl: `/${product.image}` })} className="w-full text-white font-bold py-2 text-sm transition-colors" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>{t('btn.add')}</button>
+                  <button onClick={() => addToCart({ id: product.id, name: product.name, price: product.price, imageUrl: product.imageUrl })} className="w-full text-white font-bold py-2 text-sm transition-colors" style={{ backgroundColor: bgColors[idx % bgColors.length] }}>{t('btn.add')}</button>
                 </div>
               </div>
             ))}

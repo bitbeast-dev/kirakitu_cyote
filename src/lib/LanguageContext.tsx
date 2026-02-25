@@ -103,10 +103,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
               <p className="text-gray-600">Choose your language / Hitamo ururimi</p>
             </div>
             <div className="space-y-3">
-              <button onClick={() => setLanguage('en')} className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold py-4 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all shadow-lg flex items-center justify-center gap-3">
+              <button onClick={() => setLanguage('en')} className="w-full bg-blue-500 text-white font-bold py-4 rounded-xl hover:bg-blue-600 transition-all shadow-lg flex items-center justify-center gap-3">
                 <span className="text-2xl">🇬🇧</span><span className="text-lg">English</span>
               </button>
-              <button onClick={() => setLanguage('rw')} className="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-4 rounded-xl hover:from-green-600 hover:to-teal-600 transition-all shadow-lg flex items-center justify-center gap-3">
+              <button onClick={() => setLanguage('rw')} className="w-full bg-green-500 text-white font-bold py-4 rounded-xl hover:bg-green-600 transition-all shadow-lg flex items-center justify-center gap-3">
                 <span className="text-2xl">🇷🇼</span><span className="text-lg">Kinyarwanda</span>
               </button>
             </div>
